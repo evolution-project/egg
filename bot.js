@@ -1480,7 +1480,7 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
 
 
     mining(hr, mult) {
-        let letter = "";
+        let letter = "K";
         const calc_multiplier = () => {
             if (mult !== undefined)
                 switch (mult.toUpperCase()) {
@@ -1496,31 +1496,47 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                     case "T": case "TH": case "THS": case "TH/S": case "THASH": case "THASHS": case "THASH/S":
                         letter = "T";
                         return hr * 1000 * 1000 * 1000 * 1000;
+                    default:
+                        return 0;
                 }
             return hr;
         };
 
         if (/^[0-9.\n]+$/.test(hr)) {
+            let multiplier = calc_multiplier()
+
+            if (letter === "") {
+                this.fn_send({
+                    embed: {
+                        title: `${conf.coin} Mining (${hr})`,
+                        color: conf.color.coininfo,
+                        description: "Invalid multiplier"
+                    }
+                })
+            }
+            else
+            {
             Promise.all([
                 new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))),
                 new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.hashrate))),
                 new Promise((resolve, reject) => resolve(price_avg())),
                 new Promise((resolve, reject) => resolve(price_btc_usd()))
-            ]).then(([blockcountResponse, total_hr, avgbtc, priceusd]) => {
+            ]).then(([blockcountResponse, total_hrResponse, avgbtc, priceusd]) => {
             let blockcount = 0
             if (blockcountResponse.includes('OK'))
                 blockcount = JSON.parse(blockcountResponse).result.count
+            let total_hr = 0
+            if (total_hrResponse.includes('success'))
+                total_hr = new Number(JSON.parse(total_hrResponse).data.hash_rate)
 
                 let valid = {
                     blockcount: !isNaN(blockcount),
-                    mncount: !isNaN(total_hr) && total_hr.trim() !== ""
+                    mncount: !isNaN(total_hr)
                 };
 
-                let multiplier = calc_multiplier()
-                if (valid.blockcount) { // && valid.mncount) {
+                if (valid.blockcount && !!letter) {
                     let stage = get_stage(blockcount);
                     let coinday = 86400 / conf.blocktime * stage.pow * multiplier / total_hr;
-console.log(stage, ' coinday ', coinday, ' avgbtc ', avgbtc, ' priceusd ', priceusd)
                     this.fn_send({
                         embed: {
                             title: `${conf.coin} Mining (${hr} ${letter}/s)`,
@@ -1542,6 +1558,7 @@ console.log(stage, ' coinday ', coinday, ' avgbtc ', avgbtc, ' priceusd ', price
                     });
                 }
             });
+            }
         }
         else {
             this.fn_send({
