@@ -716,7 +716,7 @@ console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', 
             let valid = {
                 blockcount: !isNaN(blockcount),
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== "",
-                supply: !isNaN(supply) && supply.trim() !== ""
+                supply: !isNaN(supply)
             };
 
             let stage = get_stage1(blockcount);
@@ -823,7 +823,7 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', 
             let valid = {
                 blockcount: !isNaN(blockcount),
                 mncount2: !isNaN(mncount2) && mncount2.trim() !== "",
-                supply: !isNaN(supply) && supply.trim() !== ""
+                supply: !isNaN(supply)
             };
 
             let stage = get_stage2(blockcount);
@@ -929,7 +929,7 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', 
             let valid = {
                 blockcount: !isNaN(blockcount),
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== "",
-                supply: !isNaN(supply) && supply.trim() !== ""
+                supply: !isNaN(supply)
             };
 
             let stage = get_stage3(blockcount);
