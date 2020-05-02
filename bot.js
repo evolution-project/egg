@@ -1527,7 +1527,7 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                 blockcount = JSON.parse(blockcountResponse).result.count
             let total_hr = 0
             if (total_hrResponse.includes('success'))
-                total_hr = new Number(JSON.parse(total_hrResponse).data.hash_rate)
+                total_hr = new Number(JSON.parse(total_hrResponse).data.hash_rate) / Math.pow(10, 1)
 
                 let valid = {
                     blockcount: !isNaN(blockcount),
