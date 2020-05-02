@@ -714,7 +714,7 @@ class BotCommand {
 
 console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tsupply ', supply)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== "",
                 supply: !isNaN(supply) && supply.trim() !== ""
             };
@@ -821,7 +821,7 @@ console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', 
 console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', mncount2, '\n\n\tsupply ', supply)
 
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount2: !isNaN(mncount2) && mncount2.trim() !== "",
                 supply: !isNaN(supply) && supply.trim() !== ""
             };
@@ -927,7 +927,7 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', 
 
 console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', mncount3, '\n\n\tsupply ', supply)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== "",
                 supply: !isNaN(supply) && supply.trim() !== ""
             };
@@ -1139,14 +1139,17 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', 
 
 
     stages() {
-        return new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))).then(blockcount => {
+        return new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))).then(blockcountResponse => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
 
             let embed = new Discord.RichEmbed();
             embed.title = conf.coin + " Stages";
             embed.color = conf.color.coininfo;
             embed.timestamp = new Date();
 
-            if (isNaN(blockcount) && blockcount.trim() !== "") {
+            if (isNaN(blockcount)) {
                 embed.description = "There seems to be a problem with the `blockcount` request\n";
             }
             else {
@@ -1305,10 +1308,13 @@ console.log('method earnings()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ',
             new Promise((resolve, reject) => resolve(request_mncount1())),
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
-        ]).then(([blockcount, mncount1, avgbtc, priceusd]) => {
+        ]).then(([blockcountResponse, mncount1, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
 console.log('\nmethod earnings1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== ""
             };
 
@@ -1364,10 +1370,14 @@ console.log('\nmethod earnings1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1
             new Promise((resolve, reject) => resolve(request_mncount2())),
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
-        ]).then(([blockcount, mncount2, avgbtc, priceusd]) => {
+        ]).then(([blockcountResponse, mncount2, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
+
 console.log('\nmethod earnings2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', mncount2, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount2: !isNaN(mncount2) && mncount2.trim() !== ""
             };
 
@@ -1421,10 +1431,13 @@ console.log('\nmethod earnings2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2
             new Promise((resolve, reject) => resolve(request_mncount3())),
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
-        ]).then(([blockcount, mncount3, avgbtc, priceusd]) => {
+        ]).then(([blockcountResponse, mncount3, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
 console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', mncount3, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== ""
             };
 
@@ -1844,10 +1857,12 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
             new Promise((resolve, reject) => resolve(request_mncount())),
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
-        ]).then(([blockcount, mncount, avgbtc, priceusd]) => {
-
+        ]).then(([blockcountResponse, mncount, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount: !isNaN(mncount) && mncount.trim() !== ""
             };
 
