@@ -704,7 +704,14 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))),
             new Promise((resolve, reject) => resolve(request_mncount1())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
-        ]).then(([blockcount, mncount1, supply]) => {
+        ]).then(([blockcountResponse, mncount1, supplyResponse]) => {
+            let supply = 0
+            let blockcount = 0
+            if (supplyResponse.includes('success'))
+                supply = JSON.parse(supplyResponse).data.coinbase /= Math.pow(10, 9)
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
+
 console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tsupply ', supply)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
@@ -803,7 +810,14 @@ console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', 
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))),
             new Promise((resolve, reject) => resolve(request_mncount2())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
-        ]).then(([blockcount, mncount2, supply]) => {
+        ]).then(([blockcountResponse, mncount2, supplyResponse]) => {
+            let supply = 0
+            let blockcount = 0
+            if (supplyResponse.includes('success'))
+                supply = JSON.parse(supplyResponse).data.coinbase /= Math.pow(10, 9)
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
+
 console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', mncount2, '\n\n\tsupply ', supply)
 
             let valid = {
@@ -903,7 +917,14 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', 
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))),
             new Promise((resolve, reject) => resolve(request_mncount3())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
-        ]).then(([blockcount, mncount3, supply]) => {
+        ]).then(([blockcountResponse, mncount3, supplyResponse]) => {
+            let supply = 0
+            let blockcount = 0
+            if (supplyResponse.includes('success'))
+                supply = JSON.parse(supplyResponse).data.coinbase /= Math.pow(10, 9)
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
+
 console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', mncount3, '\n\n\tsupply ', supply)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
@@ -1460,7 +1481,6 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
 
     mining(hr, mult) {
         let letter = "";
-
         const calc_multiplier = () => {
             if (mult !== undefined)
                 switch (mult.toUpperCase()) {
@@ -1486,19 +1506,24 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                 new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.hashrate))),
                 new Promise((resolve, reject) => resolve(price_avg())),
                 new Promise((resolve, reject) => resolve(price_btc_usd()))
-            ]).then(([blockcount, total_hr, avgbtc, priceusd]) => {
+            ]).then(([blockcountResponse, total_hr, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
 
                 let valid = {
-                    blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                    blockcount: !isNaN(blockcount),
                     mncount: !isNaN(total_hr) && total_hr.trim() !== ""
                 };
 
-                if (valid.blockcount && valid.mncount) {
+                let multiplier = calc_multiplier()
+                if (valid.blockcount) { // && valid.mncount) {
                     let stage = get_stage(blockcount);
-                    let coinday = 86400 / conf.blocktime * stage.pow * calc_multiplier() / total_hr;
+                    let coinday = 86400 / conf.blocktime * stage.pow * multiplier / total_hr;
+console.log(stage, ' coinday ', coinday, ' avgbtc ', avgbtc, ' priceusd ', priceusd)
                     this.fn_send({
                         embed: {
-                            title: conf.coin + " Mining (" + hr + " " + letter + "H/s)",
+                            title: `${conf.coin} Mining (${hr} ${letter}/s)`,
                             color: conf.color.coininfo,
                             description: stage.pow === undefined ? "POW disabled in the current coin stage" : "",
                             fields: stage.pow === undefined ? [] : earn_fields(coinday, avgbtc, priceusd),
@@ -1509,7 +1534,7 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                 else {
                     this.fn_send({
                         embed: {
-                            title: conf.coin + " Mining (" + hr + " " + letter + "H/s)",
+                            title: `${conf.coin}  Mining (${hr} ${letter}/s)`,
                             color: conf.color.coininfo,
                             description: (valid.blockcount ? "" : "There seems to be a problem with the `blockcount` request\n") + (valid.hashrate ? "" : "There seems to be a problem with the `hashrate` request"),
                             timestamp: new Date()
@@ -1521,7 +1546,7 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
         else {
             this.fn_send({
                 embed: {
-                    title: conf.coin + " Mining ( ? H/s)",
+                    title: `${conf.coin} Mining (${hr} ${letter}/s)`,
                     color: conf.color.coininfo,
                     description: "Invalid hashrate"
                 }
@@ -1568,27 +1593,28 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
         this.fn_send(simple_message("Balance", "Invalid address: `" + addr + "`\n(Addresses that never received a single coin might be considered as invalid)"));
     }
     block_index(index) {
-        this.block_hash(bash_cmd(conf.requests.blockindex + index));
+        let request = conf.requests.blockindex.replace('REPLACEMENT_VALUE', index.toString())
+        let json = JSON.parse(bash_cmd(request))
+        this.block_hash(json.result.block_header.hash);
     }
     block_hash(hash) {
-console.log('\nmethod block_hash()\n\n\hash ', hash)
         let str = "Invalid block index or hash";
 
         if (/^[A-Za-z0-9\n]+$/.test(hash)) {
             try {
-                let json = JSON.parse(bash_cmd(conf.requests.blockhash + hash));
-console.log('\nmethod block_hash()\n\n\should be blockhash response ', json)
+                let json = JSON.parse(bash_cmd(conf.requests.blockhash.replace('REPLACEMENT_VALUE', hash))).result;
                 str =
-                    "**Index:** " + json["height"] + "\n" +
-                    "**Hash:** " + json["hash"] + "\n" +
-                    "**Confirmations:** " + json["confirmations"] + "\n" +
-                    "**Size:** " + json["size"] + "\n" +
-                    "**Date:** " + new Date(new Number(json["time"]) * 1000).toUTCString() + "\n" +
-                    "**Prev Hash:** " + json["previousblockhash"] + "\n" +
-                    "**Next Hash:** " + json["nextblockhash"] + "\n" +
+                    "**Index:** " + json.block_header.height + "\n" +
+                    "**Hash:** " + json.block_header.hash + "\n" +
+                    "**Block Weight:** " + json.block_header.block_weight + "\n" +
+                    "**Major Version:** " + json.block_header.major_version + "\n" +
+                    "**Minor Version:** " + json.block_header.minor_version + "\n" +
+                    "**Date:** " + new Date(new Number(json.block_header.timestamp) * 1000).toUTCString() + "\n" +
+                    "**Prev Hash:** " + json.block_header.prev_hash + "\n" +
+                    "**Reward:** " + (new Number(json.block_header.reward) /  Math.pow(10, 9)) + "\n" +
                     "**Transactions:**\n";
-                for (let i = 0; i < json["tx"].length; i++)
-                    str += json["tx"][i] + "\n";
+                for (let i = 0; i < json.tx_hashes.length; i++)
+                    str += json.tx_hashes[i] + "\n\t";
             }
             catch (e) {  }
         }
