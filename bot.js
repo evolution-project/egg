@@ -55,7 +55,7 @@ class ExchangeData {
         this.buy = "Error";
         this.sell = "Error";
         this.change = "Error";
-	this.high = "Error";
+    this.high = "Error";
         this.low  = "Error";
     }
     fillj(json, price, volume, buy, sell, change) {
@@ -75,18 +75,16 @@ class ExchangeData {
 
 function start_monitor() {
     if (conf.monitor !== undefined && conf.monitor.enabled === true) {
-
         const channel = client.channels.get(conf.monitor.channel);
         let embeds = [];
-        let cmd = new BotCommand(undefined, txt => embeds.push(txt));
-        
+        let cmd = new BotCommand(undefined, txt => embeds.push(txt));        
         const refresh_monitor = async () => {
             embeds = [];
             await cmd.price();
-        //    await cmd.stats1();
-        //    await cmd.stats2();
-        //    await cmd.stats3();		
-        //    await cmd.earnings();
+//            await cmd.stats1();
+//            await cmd.stats2();
+//            await cmd.stats3();     
+//            await cmd.earnings();
             channel.bulkDelete(50).then(async () => {
                 for (let emb of embeds)
                     await channel.send(emb);
@@ -136,32 +134,35 @@ function get_ticker(ticker) {
 
         const js_request = (url, fn) => {
 
-	  console.log( "url___1 " + url );
+      console.log( "url___1 " + url );
 
             async_request(url).then(x => {
 
-		console.log( "url " + url );
+        console.log( "url " + url );
     
                 try {
           
-	            var firstChar = x.substring(0, 1);
+                var firstChar = x.substring(0, 1);
                     var firstCharCode = x.charCodeAt(0);
                     if (firstCharCode == 65279) {
                     //    console.log('First character "' + firstChar + '" (character code: ' + firstCharCode + ') is invalid so removing it.');
                         x = x.substring(1);
-                    }		
-			
-		 /*   x=x.replace(/\n/g,'');
-		    x=x.replace(/[\/]/g,'');	            
-		    x=x.replace('sell_price','sell');
-	            x=x.replace('buy_price','buy');
-		    x=x.replace('latest_price','latest');
+                    }       
+            
+         /*   x=x.replace(/\n/g,'');
+            x=x.replace(/[\/]/g,'');                
+            x=x.replace('sell_price','sell');
+                x=x.replace('buy_price','buy');
+            x=x.replace('latest_price','latest');
                     x=x.replace('5.80419995','"5.80419995"');
-	            x=x.replace('ZEON\BTC','"5.80419995"');
-		  */  console.log( "x " + x ); 	
+                x=x.replace('ZEON\BTC','"5.80419995"');
+          */  console.log( "x " + x );   
                     fn(JSON.parse(x));
                 }
-                catch (e) { console.log( "e " + e ); /**/ }
+                catch (e) 
+                { 
+                console.log( "e " + e ); /**/ 
+                }
                 resolve(exdata);
             }).catch(() => resolve(exdata));
         };
@@ -239,14 +240,14 @@ function get_ticker(ticker) {
             }
 
 
-	    case "cratex_btc": {
+        case "cratex_btc": {
                 exdata.link = `https://cratex.io/index.php?pair=${coin_up[0]}/${coin_up[1]}`;
                 js_request(`https://cratex.io/api/v1/get_markets.php?market=${coin_up[0]}/${coin_up[1]}`, res => exdata.fillj(res,"latest_price" ,"volume24h", "sell_price" , "buy_price" , "price24hago" ));
                 
-		
+        
                 break;
             }
-	    case "cratex_ltc": {
+        case "cratex_ltc": {
                 exdata.link = `https://cratex.io/index.php?pair=${coin_up[0]}/LTC`;
                 js_request(`https://cratex.io/api/v1/get_markets.php?market=${coin_up[0]}/LTC`, res => exdata.fillj(res,"latest_price" ,"volume24h", "sell_price" , "buy_price" , "price24hago" ));
                 
@@ -263,7 +264,7 @@ function get_ticker(ticker) {
                 js_request(`https://cratex.io/api/v1/get_markets.php?market=${coin_up[0]}/DOGE`, res => exdata.fillj(res,"latest_price" ,"volume24h", "sell_price" , "buy_price" , "price24hago" ));
                 break;
             }
-	     case "altmarkets_btc": {
+         case "altmarkets_btc": {
                 exdata.link = `https://altmarkets.io/trading/${coin_lw[0]}${coin_lw[1]}`;
                 js_request(`https://altmarkets.io/api/v2/tickers/${coin_lw[0]}${coin_lw[1]}`, res => exdata.fillj(res["ticker"],"last" ,"vol", "high" , "low" , "" ));
                 break;
@@ -278,12 +279,12 @@ function get_ticker(ticker) {
                 js_request(`https://tradebtc.zeonhexalgo.fun/api/v1/public/getmarketsummary?market=${coin_up[1]}-${coin_up[0]}`, res => exdata.fillj(res["result"], "Last", "Volume","Ask", "Bid", ""));
                 break;
             }
-	    case "zeonexchange": {
+        case "zeonexchange": {
                 exdata.link = `https://exchange.zeonhexalgo.fun/market/53`;
                 js_request(`https://exchange.zeonhexalgo.fun/page/api?method=singlemarket&marketid=53` , res => exdata.fillj(res["return"][0], "lasttradeprice", "volume24h", "sell", "buy", "0"));
                 break;
           
-            } 		
+            }       
             case "finexbox_btc": {
                 exdata.link = `https://www.finexbox.com/market/pair/${coin_up[0]}-${coin_up[1]}.html`;
                 js_request(`https://xapi.finexbox.com/v1/ticker?market=${coin_up[0]}_${coin_up[1]}`, res => exdata.fillj(res["result"], "price", "volume", "high", "low", "percent"));
@@ -298,7 +299,7 @@ function get_ticker(ticker) {
                 exdata.link = `https://graviex.net/markets/${coin_lw[0]}${coin_lw[1]}`;
                 js_request(`https://graviex.net:443/api/v2/tickers/${coin_lw[0]}${coin_lw[1]}.json`, res => exdata.fillj(res["ticker"], "last", "volbtc", "buy", "sell", "change"));
                 break;
-			
+            
             }
 
 
@@ -695,7 +696,7 @@ class BotCommand {
                 embed.addBlankField(true);
 
             this.fn_send(embed);
-	  });		
+      });       
         }
     
     stats1() {
@@ -704,7 +705,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(request_mncount1())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
         ]).then(([blockcount, mncount1, supply]) => {
-            
+console.log('\nmethod stat1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tsupply ', supply)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== "",
@@ -803,6 +804,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(request_mncount2())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
         ]).then(([blockcount, mncount2, supply]) => {
+console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', mncount2, '\n\n\tsupply ', supply)
 
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
@@ -902,7 +904,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(request_mncount3())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
         ]).then(([blockcount, mncount3, supply]) => {
-
+console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', mncount3, '\n\n\tsupply ', supply)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== "",
@@ -1003,12 +1005,19 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.blockcount))),
             new Promise((resolve, reject) => resolve(request_mncount())),
             new Promise((resolve, reject) => resolve(bash_cmd(conf.requests.supply)))
-        ]).then(([blockcount, mncount, supply]) => {
-            
+        ]).then(([blockcountResponse, mncount, supplyResponse]) => {
+            let supply = 0
+            let blockcount = 0
+            if (supplyResponse.includes('success'))
+                supply = JSON.parse(supplyResponse).data.coinbase /= Math.pow(10, 9)
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
+
+ console.log('\nmethod stat()\n\n\tblockcountResponse ', blockcountResponse, '\n\n\tblockcount ', blockcount, '\n\n\tmncount ', mncount, '\n\n\tsupply ', supply)           
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount: !isNaN(mncount) && mncount.trim() !== "",
-                supply: !isNaN(supply) && supply.trim() !== ""
+                supply: !isNaN(supply)
             };
 
             let stage = get_stage(blockcount);
@@ -1033,7 +1042,7 @@ class BotCommand {
                     }
                     case "supply": { 
                         if (valid.supply)
-                            embed.addField("Supply", parseFloat(supply).toFixed(4).replace(/(\d)(?=(?:\d{3})+(?:\.|$))|(\.\d{4}?)\d*$/g, (m, s1, s2) => s2 || s1 + ',') + " " + conf.coin, true);
+                            embed.addField("Supply", parseFloat(supply).toFixed(0).replace(/(\d)(?=(?:\d{3})+(?:\.|$))|(\.\d{4}?)\d*$/g, (m, s1, s2) => s2 || s1 + ',') + " " + conf.coin, true);
                         break;
                     }
                     case "collateral": { 
@@ -1150,10 +1159,11 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(request_mncount1())),
             new Promise((resolve, reject) => resolve(request_mncount2())),
             new Promise((resolve, reject) => resolve(request_mncount3())),
-	    new Promise((resolve, reject) => resolve(price_avg())),
+        new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
         ]).then(([blockcount, mncount1, mncount2, mncount3, avgbtc, priceusd]) => {
 
+console.log('method earnings()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tmncount2 ', mncount2, '\n\n\tmncount3 ', mncount3, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== "",
@@ -1163,16 +1173,16 @@ class BotCommand {
 
             if (valid.blockcount && valid.mncount1  && valid.mncount2 && valid.mncount3 ) {
                 mns1 = mns1 !== undefined && mns1 > 0 ? mns1 : 0;
-		mns2 = mns2 !== undefined && mns2 > 0 ? mns2 : 0;
+        mns2 = mns2 !== undefined && mns2 > 0 ? mns2 : 0;
                 mns3 = mns3 !== undefined && mns3 > 0 ? mns3 : 0;
     
                 let stage1 = get_stage1(blockcount);
-		let stage2 = get_stage2(blockcount);
+        let stage2 = get_stage2(blockcount);
                 let stage3 = get_stage3(blockcount);
     
                 let coinday1 = 86400 / conf.blocktime / mncount1 * stage1.mn;
                 let coinday2 = 86400 / conf.blocktime / mncount2 * stage2.mn;
-		let coinday3 = 86400 / conf.blocktime / mncount3 * stage3.mn;    
+        let coinday3 = 86400 / conf.blocktime / mncount3 * stage3.mn;    
 
                 this.fn_send({
                     embed: {
@@ -1199,33 +1209,33 @@ class BotCommand {
 
 
 
-		            {
+                    {
                                 name: "ROI Level 1",
                                 value: (36500 / (stage1.coll / coinday1)).toFixed(2) + "%\n" + (stage1.coll / coinday1).toFixed(2) + " days",
                                 inline: true
                             },
-		            {
+                    {
                                 name: "ROI Level 2",
                                 value: (36500 / (stage2.coll / coinday2)).toFixed(2) + "%\n" + (stage2.coll / coinday2).toFixed(2) + " days",
                                 inline: true
                             },
-		            {
+                    {
                                 name: "ROI Level 3",
                                 value: (36500 / (stage3.coll / coinday3)).toFixed(2) + "%\n" + (stage3.coll / coinday3).toFixed(2) + " days",
                                 inline: true
                             },
-				
+                
                             {
                                 name: "MN Price Level 1",
                                 value: (stage1.coll * avgbtc).toFixed(8) + " BTC\n" + (stage1.coll * avgbtc * priceusd).toFixed(2) + " USD",
                                 inline: true
                             },
-			    {
+                {
                                 name: "MN Price Level 2",
                                 value: (stage2.coll * avgbtc).toFixed(8) + " BTC\n" + (stage2.coll * avgbtc * priceusd).toFixed(2) + " USD",
                                 inline: true
                             },
-	                    {
+                        {
                                 name: "MN Price Level 3",
                                 value: (stage3.coll * avgbtc).toFixed(8) + " BTC\n" + (stage3.coll * avgbtc * priceusd).toFixed(2) + " USD",
                                 inline: true
@@ -1245,8 +1255,8 @@ class BotCommand {
                                 value:  mns3 > 0 ? ((stage3.coll / (coinday3 * mns3)).toFixed(2) + " days" ) : "----",
                                 inline: true
                             }
-		
-           		
+        
+                
                         ].concat(earn_fields_M(coinday1 * mns1, avgbtc, priceusd)).concat(earn_fields_M(coinday2 * mns2, avgbtc, priceusd)).concat(earn_fields_M(coinday3 * mns3, avgbtc, priceusd)) ,
                         timestamp: new Date()
                     }
@@ -1273,7 +1283,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
         ]).then(([blockcount, mncount1, avgbtc, priceusd]) => {
-
+console.log('\nmethod earnings1()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== ""
@@ -1285,7 +1295,7 @@ class BotCommand {
                 let coinday = 86400 / conf.blocktime / mncount1 * stage.mn;
                 this.fn_send({
                     embed: {
-			  
+              
                         title: conf.coin + " Earnings Level 1" + (mns !== 1 ? " (" + mns + " MNs)" : ""),
                         color: conf.color.coininfo1,
                         fields: [
@@ -1313,7 +1323,7 @@ class BotCommand {
             else {
                 this.fn_send({
                     embed: {
-			    
+                
                         title: conf.coin + " Earnings Level 1",
                         color: conf.color.coininfo1,
                         description: (valid.blockcount ? "" : "There seems to be a problem with the `blockcount` request\n") + (valid.mncount1 ? "" : "There seems to be a problem with the `mncount` request"),
@@ -1332,7 +1342,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
         ]).then(([blockcount, mncount2, avgbtc, priceusd]) => {
-
+console.log('\nmethod earnings2()\n\n\tblockcount ', blockcount, '\n\n\tmncount2 ', mncount2, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount2: !isNaN(mncount2) && mncount2.trim() !== ""
@@ -1389,7 +1399,7 @@ class BotCommand {
             new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
         ]).then(([blockcount, mncount3, avgbtc, priceusd]) => {
-
+console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', mncount3, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
                 blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== ""
@@ -1436,10 +1446,10 @@ class BotCommand {
                 });
             }
         });
-    }	
+    }   
 
 
-	
+    
 
 
 
@@ -1561,11 +1571,13 @@ class BotCommand {
         this.block_hash(bash_cmd(conf.requests.blockindex + index));
     }
     block_hash(hash) {
+console.log('\nmethod block_hash()\n\n\hash ', hash)
         let str = "Invalid block index or hash";
 
         if (/^[A-Za-z0-9\n]+$/.test(hash)) {
             try {
                 let json = JSON.parse(bash_cmd(conf.requests.blockhash + hash));
+console.log('\nmethod block_hash()\n\n\should be blockhash response ', json)
                 str =
                     "**Index:** " + json["height"] + "\n" +
                     "**Hash:** " + json["hash"] + "\n" +
@@ -1852,9 +1864,9 @@ class BotCommand {
                     {
                         name: "Earnings:",
                         value:
-			    			    
+                                
                             " - **" + conf.prefix + "earnings [Mn1  Mn2  Mn3 ]** : get the expected earnings per masternode, \n" + 
-			    "                       aditionally you can put the amount of MNs at each level \n" +
+                "                       aditionally you can put the amount of MNs at each level \n" +
                             " - **" + conf.prefix + "earnings1 [amount of MNs]** : get the expected earnings per masternode Level 1\n" +
                             " - **" + conf.prefix + "earnings2 [amount of MNs]** : get the expected earnings per masternode Level 2\n" +
                             " - **" + conf.prefix + "earnings3 [amount of MNs]** : get the expected earnings per masternode Level 3\n" 
@@ -1864,7 +1876,7 @@ class BotCommand {
                         value:
                             " - **" + conf.prefix + "mining <hashrate> [K/M/G/T]** : get the expected earnings with the given hashrate, aditionally you can put the hashrate multiplier (K = KHash/s, M = MHash/s, ...)"
                     },
-		
+        
                     {
                         name: "Explorer",
                         value:
@@ -1988,6 +2000,7 @@ process.on("unhandledRejection", err => {
     console.log("Stack:" + err.stack);
     process.exit();
 });
+
 client.on("message", msg => {
     
     if ( !msg.content.startsWith(conf.prefix || message.author.id === client.user.id  ) )
@@ -2054,8 +2067,8 @@ client.on("message", msg => {
                 cmd.stats1();
             break;
         }
-	
-	case "stats2": {
+    
+    case "stats2": {
             if (enabled_cmd("stats2", valid_request("blockcount") || valid_request("mncount2") || valid_request("supply")))
                 cmd.stats2();
             break;
@@ -2066,8 +2079,8 @@ client.on("message", msg => {
                 cmd.stats3();
             break;
         }
-        		    
-	    
+                    
+        
         case "stages": {
             if (enabled_cmd("stages", valid_request("blockcount")))
                 cmd.stages();
@@ -2078,7 +2091,7 @@ client.on("message", msg => {
                 cmd.earnings(args[1] ,args[2] , args[3] );
             break;
         }
-	case "earnings1": {
+    case "earnings1": {
             if (enabled_cmd("earnings1", valid_request("blockcount") && valid_request("mncount1")))
                 cmd.earnings1(args[1]);
             break;
@@ -2093,7 +2106,7 @@ client.on("message", msg => {
                 cmd.earnings3(args[1]);
             break;
         }
-	    
+        
         case "mining": {
             if (enabled_cmd("mining", valid_request("blockcount") && valid_request("hashrate")) && !error_noparam(1, "You need to provide amount of hashrate"))
                 cmd.mining(args[1], args[2]);
@@ -2221,4 +2234,5 @@ else if (process.argv.length >= 3 && process.argv[2] === "handled_child")
     });
 else
     handle_child();
+
 
