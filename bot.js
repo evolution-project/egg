@@ -84,7 +84,7 @@ function start_monitor() {
 //            await cmd.stats1();
 //            await cmd.stats2();
 //            await cmd.stats3();     
-//            await cmd.earnings();
+            await cmd.earnings();
             channel.bulkDelete(50).then(async () => {
                 for (let emb of embeds)
                     await channel.send(emb);
@@ -1180,13 +1180,15 @@ console.log('\nmethod stat2()\n\n\tblockcount ', blockcount, '\n\n\tmncount3 ', 
             new Promise((resolve, reject) => resolve(request_mncount1())),
             new Promise((resolve, reject) => resolve(request_mncount2())),
             new Promise((resolve, reject) => resolve(request_mncount3())),
-        new Promise((resolve, reject) => resolve(price_avg())),
+            new Promise((resolve, reject) => resolve(price_avg())),
             new Promise((resolve, reject) => resolve(price_btc_usd()))
-        ]).then(([blockcount, mncount1, mncount2, mncount3, avgbtc, priceusd]) => {
-
+        ]).then(([blockcountResponse, mncount1, mncount2, mncount3, avgbtc, priceusd]) => {
+            let blockcount = 0
+            if (blockcountResponse.includes('OK'))
+                blockcount = JSON.parse(blockcountResponse).result.count
 console.log('method earnings()\n\n\tblockcount ', blockcount, '\n\n\tmncount1 ', mncount1, '\n\n\tmncount2 ', mncount2, '\n\n\tmncount3 ', mncount3, '\n\n\tavgbtc ', avgbtc, '\n\n\tpriceusd ', priceusd)
             let valid = {
-                blockcount: !isNaN(blockcount) && blockcount.trim() !== "",
+                blockcount: !isNaN(blockcount),
                 mncount1: !isNaN(mncount1) && mncount1.trim() !== "",
                 mncount2: !isNaN(mncount2) && mncount2.trim() !== "",
                 mncount3: !isNaN(mncount3) && mncount3.trim() !== ""
