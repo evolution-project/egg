@@ -523,7 +523,23 @@ function request_mncount3() {
     return /^[0-9]+$/.test(cmd_res) ? cmd_res : "";
 }
 
+function request_block_by_hash(hash) {
+    let cmd_res = bash_cmd(conf.requests.blockhash.replace('REPLACEMENT_VALUE', hash))
+    try {
+        return JSON.parse(cmd_res).result
+    }
+    catch(e) {/**/}
+    return {}
+}
 
+function request_block_hash_by_height(index) {
+    let cmd_res = bash_cmd(conf.requests.blockindex.replace('REPLACEMENT_VALUE', index))
+    try {
+        return JSON.parse(cmd_res).result.block_header.hash
+    }
+    catch(e) {/**/}
+    return {}
+}
 
 
 function valid_request(req) {
@@ -1625,16 +1641,25 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
         this.fn_send(simple_message("Balance", "Invalid address: `" + addr + "`\n(Addresses that never received a single coin might be considered as invalid)"));
     }
     block_index(index) {
-        let request = conf.requests.blockindex.replace('REPLACEMENT_VALUE', index.toString())
-        let json = JSON.parse(bash_cmd(request))
-        this.block_hash(json.result.block_header.hash);
+        let hash = request_block_hash_by_height(index)        
+        if (!!hash) {
+            this.block_hash(hash)
+        } else {
+            this.fn_send({
+                embed: {
+                    title: "Block info",
+                    color: conf.color.explorer,
+                    description: 'Index greater than current height'
+                }
+            });
+        }
     }
     block_hash(hash) {
         let str = "Invalid block index or hash";
 
         if (/^[A-Za-z0-9\n]+$/.test(hash)) {
             try {
-                let json = JSON.parse(bash_cmd(conf.requests.blockhash.replace('REPLACEMENT_VALUE', hash))).result;
+                let json = request_block_by_hash(hash);
                 str =
                     "**Index:** " + json.block_header.height + "\n" +
                     "**Hash:** " + json.block_header.hash + "\n" +
