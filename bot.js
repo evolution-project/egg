@@ -1684,26 +1684,45 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
         });
     }
 
-    breakfast(dayOfWeek) {
-        // default message, assume bad data
-        let return_description = 'You fucked up, i need a number [1-7] for day'
-        if (!isNaN(dayOfWeek) && dayOfWeek > 0 && dayOfWeek < 8) {
-        let breakfasts = ["pancakes and maple syrup",
-                          "bacon and eggs",
-                          "shrimp and grits",
-                          "biscuits/scones and gravy",
-                          "biscuits/scones and chocolate gravy",
-                          "waffes and bacon/sausage",
-                          "chicken fried steak with gravy/eggs"
-                          ]
-            // remember zero based array.
-            return_description = breakfasts[dayOfWeek - 1]
-        }
+    pools() {
+
+        let embed = new Discord.RichEmbed();
+        embed.title = conf.coin + " Pools";
+        embed.color = conf.color.coininfo;
+        embed.timestamp = new Date();
+
+        async_request('https://raw.githubusercontent.com/evolution-project/egg/master/pools.json')
+            .then((pools) => {
+                try {
+                    pools = JSON.parse(pools)
+                    pools.forEach((pool, index) => {
+                        let blurb = '**__advertise here__**'
+                        if(!!pool.blurb) {
+                            blurb = pool.blurb.length <= 1024 ? pool.blurb : pool.blurb.substring(1, 1024)
+                        }
+                        embed.addField(`${index}. ${pool.name} **__${pool.url}__**`, blurb)
+                    })
+                }
+                catch(error) {
+                    embed.addField('**__Somebody Has Jacked Up pools.json at Github.com__**', '**__Please Fix Me!!!__**')
+                }
+                this.fn_send(embed)
+            })
+            .catch(() => {
+                this.fn_send({
+                    title: 'Pools',
+                    color: conf.color.explorer,
+                    description: 'You fucked up'
+                })
+            })
+    }
+
+    pool(indexOfPool) {
         this.fn_send({
             embed: {
-                title: "Breakfast",
+                title: `Pool ${indexOfPool || 1}`,
                 color: conf.color.explorer,
-                description: return_description
+                description: 'Artfix Promised To Add Pool Details'
             }
         })
     }
@@ -2022,9 +2041,14 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                             " - **" + conf.prefix + "conf-set** : set a new config to the bot via dm"
                     },
                     {
-                        name: "ArtFix Breakfast:",
+                        name: "Pools:",
                         value: 
-                            " - **" + conf.prefix + "breakfast <day> : get what ArtFix has for breakfast on days 1-7"
+                            " - **" + conf.prefix + "Pools : All EVOX pools"
+                    },
+                    {
+                        name: "Pool:",
+                        value: 
+                            " - **" + conf.prefix + "Pool <index> : Get Details about the selected pool"
                     }
                 ]
             }
@@ -2334,8 +2358,13 @@ client.on("message", msg => {
                 cmd.conf_set();
             break;
         }
-        case "breakfast": {
-            cmd.breakfast(args[1]);
+        case "pool": {
+            if (args.length === 2)
+                cmd.pool(args[1]);
+            break;
+        }
+        case "pools": {
+            cmd.pools();
             break;
         }
 
