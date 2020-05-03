@@ -1684,6 +1684,37 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
         });
     }
 
+    breakfast(dayOfWeek) {
+        // default message, assume bad data
+        let return_description = 'You fucked up, i need a number [1-7] for day'
+        if (NaN(dayOfWeek) || dayOfWeek < 1 || dayOfWeek > 7) {
+            this.fn_send({
+                embed: {
+                    title: "Breakfast",
+                    color: conf.color.explorer,
+                    description: 'You fucked up, i need a number [1-7] for day'
+                }
+            })
+        } else {
+        let breakfasts = ["pancakes and maple syrup",
+                          "bacon and eggs",
+                          "shrimp and grits",
+                          "biscuits/scones and gravy",
+                          "biscuits/scones and chocolate gravy",
+                          "waffes and bacon/sausage",
+                          "chicken fried steak with gravy/eggs"
+                          ]
+            return_description = breakfasts[dayOfWeek]
+        }
+        this.fn_send({
+            embed: {
+                title: "Breakfast",
+                color: conf.color.explorer,
+                description: return_description
+            }
+        })
+    }
+
     my_address_add(addrs) {
         create_no_exists(users_addr_folder);
         for (let addr of addrs) {
@@ -1996,6 +2027,11 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                         value:
                             " - **" + conf.prefix + "conf-get** : retrieve the bot config via dm\n" +
                             " - **" + conf.prefix + "conf-set** : set a new config to the bot via dm"
+                    },
+                    {
+                        name: "ArtFix Breakfast:",
+                        value: 
+                            " - **" + conf.prefix + "breakfast <day> : get what ArtFix has for breakfast on days 1-7"
                     }
                 ]
             }
@@ -2303,6 +2339,10 @@ client.on("message", msg => {
         case "conf-set": {
             if (!error_noworthy())
                 cmd.conf_set();
+            break;
+        }
+        case "breakfast": {
+            cmd.breakfast(args[1]);
             break;
         }
 
