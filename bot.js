@@ -1687,15 +1687,7 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
     breakfast(dayOfWeek) {
         // default message, assume bad data
         let return_description = 'You fucked up, i need a number [1-7] for day'
-        if (NaN(dayOfWeek) || dayOfWeek < 1 || dayOfWeek > 7) {
-            this.fn_send({
-                embed: {
-                    title: "Breakfast",
-                    color: conf.color.explorer,
-                    description: 'You fucked up, i need a number [1-7] for day'
-                }
-            })
-        } else {
+        if (!isNaN(dayOfWeek) && dayOfWeek > 0 && dayOfWeek < 8) {
         let breakfasts = ["pancakes and maple syrup",
                           "bacon and eggs",
                           "shrimp and grits",
@@ -1704,7 +1696,8 @@ console.log('\nmethod earnings3()\n\n\tblockcount ', blockcount, '\n\n\tmncount3
                           "waffes and bacon/sausage",
                           "chicken fried steak with gravy/eggs"
                           ]
-            return_description = breakfasts[dayOfWeek]
+            // remember zero based array.
+            return_description = breakfasts[dayOfWeek - 1]
         }
         this.fn_send({
             embed: {
