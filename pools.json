@@ -1,12 +1,12 @@
 [
-{"name": "walemo.com", "url": "https://evox.walemo.com"},
-{"name": "gntl.col.uk", "url": "https://evox.pool.gntl.co.uk"},
-{"name": "evolution.space", "url": "https://pool.evolutionproject.space"},
-{"name": "evolution.space", "url": "https://eu.evolutionproject.space"},
-{"name": "fastpool", "url": "https://fastpool.xyz/evox"},
-{"name": "cryptocoins-hashing", "url": "https://evox.cryptocoins-hashing.club"},
-{"name": "miningpools", "url": "https://evox.miningpool.fun"},
-{"name": "pool-pay", "url": "https://evox.pool-pay.com"},
-{"name": "minergalaxy", "url": "https://minergalaxy.com/evox"},
-{"name": "vip69", "url": "https://evox.vip69.ru"}
+{"name": "walemo.com", "url": "https://evox.walemo.com", "blurb": null},
+{"name": "gntl.col.uk", "url": "https://evox.pool.gntl.co.uk", "blurb": null},
+{"name": "evolution.space", "url": "https://pool.evolutionproject.space", "blurb": "everyone like free advertising},
+{"name": "evolution.space", "url": "https://eu.evolutionproject.space", "blurb": null},
+{"name": "fastpool", "url": "https://fastpool.xyz/evox", "blurb": null},
+{"name": "cryptocoins-hashing", "url": "https://evox.cryptocoins-hashing.club", "blurb": null},
+{"name": "miningpools", "url": "https://evox.miningpool.fun", "blurb": null},
+{"name": "pool-pay", "url": "https://evox.pool-pay.com", "blurb": null},
+{"name": "minergalaxy", "url": "https://minergalaxy.com/evox", "blurb": null},
+{"name": "vip69", "url": "https://evox.vip69.ru", "blurb": null},
 ]
