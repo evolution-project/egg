@@ -1,12 +1,10 @@
 [
-{"name": "Walemo.com", "url": "https://evox.walemo.com", "blurb": "Chinese Pool"},
-{"name": "Gntl.col.uk", "url": "https://evox.pool.gntl.co.uk", "blurb": null},
-{"name": "Evolution.space", "url": "https://pool.evolutionproject.space", "blurb": "Dev Romania Pool"},
-{"name": "Evolution.space", "url": "https://eu.evolutionproject.space", "blurb": "Dev Eu Pool"},
-{"name": "Fastpool", "url": "https://fastpool.xyz/evox", "blurb": null},
-{"name": "Cryptocoins-Hashing", "url": "https://evox.cryptocoins-hashing.club", "blurb": null},
-{"name": "Miningpool", "url": "https://evox.miningpool.fun", "blurb": null},
-{"name": "Pool-Pay", "url": "https://evox.pool-pay.com", "blurb": null},
-{"name": "Minergalaxy", "url": "https://minergalaxy.com/evox", "blurb": null},
-{"name": "Vip69", "url": "https://evox.vip69.ru", "blurb": null}
+{"name": "EvoX Dev Pool", "url": "https://eu.evolutionproject.space", "blurb": "everyone like free advertising"},
+{"name": "Walemo", "url": "https://evox.walemo.com", "blurb": null},
+{"name": "GNTL Pool", "url": "https://evox.pool.gntl.co.uk", "blurb": null},
+{"name": "DXpool", "url": "https://evox.walemo.com", "blurb": null},
+{"name": "FastPool", "url": "https://fastpool.xyz/evox", "blurb": null},
+{"name": "MiningPools", "url": "https://evox.miningpool.fun", "blurb": null},
+{"name": "PoolPay", "url": "https://evox.pool-pay.com", "blurb": null},
+{"name": "MergedMining Pool", "url": "https://minergalaxy.com/evox", "blurb": null}
 ]
