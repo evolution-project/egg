@@ -5,6 +5,6 @@
 {"name": "DXpool", "url": "https://evox.walemo.com", "blurb": null},
 {"name": "FastPool", "url": "https://fastpool.xyz/evox", "blurb": null},
 {"name": "MiningPools", "url": "https://evox.miningpool.fun", "blurb": null},
-{"name": "PoolPay", "url": "https://evox.pool-pay.com", "blurb": null},
-{"name": "MergedMining Pool", "url": "https://evox.mergedpools.com/pool/", "blurb": null}
+{"name": "PoolPay", "url": "https://evox.pool-pay.com", "blurb": "Profitability Switching Pool"},
+{"name": "MergedMining Pool", "url": "https://evox.mergedpools.com/pool/", "blurb": "Mining EVOX + STLX"}
 ]
